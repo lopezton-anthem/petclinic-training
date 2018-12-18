@@ -18,3 +18,21 @@ management:
 #  instance:
 #    hostname: locahost
 #    instance-id: localhost:8080
+
+nimbus:
+  cloud:
+    auth-server: http://localhost:8891/auth-server
+        
+security:
+  oauth2:
+    sso:
+      loginPath: /login
+    client:
+      clientId: nimbus1
+      clientSecret: nimbus1
+      accessTokenUri: http://localhost:8891/auth-server/oauth/token
+      userAuthorizationUri: http://localhost:8891/auth-server/oauth/authorize
+      clientAuthenticationScheme: form
+    resource:
+      userInfoUri: http://localhost:8891/auth-server/me
+      preferTokenInfo: false
