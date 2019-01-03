@@ -1,14 +1,46 @@
+server.port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    
 spring:
   application.name: gateway
+  autoconfigure:
+    # TODO: remove when fixed https://github.com/spring-projects/spring-security/issues/6314
+    exclude: org.springframework.boot.actuate.autoconfigure.security.reactive.ReactiveManagementWebSecurityAutoConfiguration
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
-server.port: 8080
-logging:
-  level:
-    org.springframework.cloud.gateway: TRACE
+  security:
+    oauth2:
+      client:
+        registration:
+          # TODO This data should be retrieved from db collection: oauth_client_details
+          nimbus:
+            provider: nimbus
+            client-id: nimbus1
+            client-secret: nimbus1
+            authorization-grant-type: authorization_code
+            #redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri-template: "{baseUrl}/petclinic#/h/petclinicdashboard/vpDashboard"
+            #scope: openid,profile,email,resource.read
+            scope: read,write
+        provider:
+          nimbus:
+            #authorization-uri: http://localhost:8090/uaa/oauth/authorize
+            #token-uri: http://localhost:8090/uaa/oauth/token
+            #user-info-uri: http://localhost:8090/uaa/userinfo
+            #user-name-attribute: sub
+            #jwk-set-uri: http://localhost:8090/uaa/token_keys
+            authorization-uri: http://localhost:8891/auth-server/oauth/authorize
+            token-uri: http://localhost:8891/auth-server/oauth/token
+            user-info-uri: http://localhost:8891/auth-server/me
+            user-name-attribute: sub
+            jwk-set-uri: http://localhost:8891/auth-server/token_keys
+
 management:
   endpoints:
     web:
