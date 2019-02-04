@@ -154,4 +154,16 @@ public class CodeValueTypes {
 			return values;
 		}
     }
+	
+	public static class EditorKeyValueReplacors implements Source {
+    	@Override
+		public List<ParamValue> getValues(String paramPath) {
+			List<ParamValue> values = new ArrayList<>();
+			values.add(new ParamValue("#OwnerName", "#OwnerName"));
+			values.add(new ParamValue("#PetName", "#PetName"));
+			values.add(new ParamValue("#AssignedVet", "#AssignedVet"));
+			values.add(new ParamValue("#PetType", "#PetType"));
+			return values;
+		}
+    }
 }

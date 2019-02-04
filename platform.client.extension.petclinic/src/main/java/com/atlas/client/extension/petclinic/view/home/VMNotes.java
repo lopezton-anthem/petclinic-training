@@ -27,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ButtonGroup;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Form;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.RichText;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.RichText.ToolbarFeature;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
@@ -34,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
+import com.atlas.client.extension.petclinic.core.CodeValueTypes.EditorKeyValueReplacors;
 import com.atlas.client.extension.petclinic.core.CodeValueTypes.NoteTypes;
 import com.atlas.client.extension.petclinic.core.Note;
 
@@ -96,7 +98,13 @@ public class VMNotes {
 		
 		@Label("Note Description")
 		@NotNull
-		@RichText(postEventOnChange = true)
+		@RichText(postEventOnChange = true, toolbarFeatures = {
+			ToolbarFeature.HEADER, ToolbarFeature.FONT, ToolbarFeature.BOLD,
+			ToolbarFeature.ITALIC, ToolbarFeature.UNDERLINE, ToolbarFeature.STRIKE, ToolbarFeature.COLOR,
+			ToolbarFeature.BACKGROUND, ToolbarFeature.SCRIPT, ToolbarFeature.LIST, ToolbarFeature.INDENT,
+			ToolbarFeature.ALIGN, ToolbarFeature.LINK, ToolbarFeature.CLEAN, ToolbarFeature.VALUES_COMBOBOX
+		})
+		@Values(EditorKeyValueReplacors.class)
 		@Path
 		private String noteDescription;
 		
@@ -142,6 +150,7 @@ public class VMNotes {
 		@Config(url = "<!#this!>/../../../vfAddNote/_update")
 		@Config(url = "/p/notes/_new?fn=_initEntity&target=/noteDescription&json=\"<!/../noteDescription!>\"&target=/noteType&json=\"<!/../noteType!>\"")
 		@Config(url = "/vpNotes/vtNotes/vsNotes/notes/.m/_process?fn=_set&url=/p/notes/_search?fn=query")
+		@Config(url = "<!#this!>/../../../../_process?fn=_setByRule&rule=togglemodal")
 		private String submit;
 		
 		@Label(value = "Back")
