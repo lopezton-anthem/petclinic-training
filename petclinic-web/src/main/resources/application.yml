@@ -1,0 +1,235 @@
+spring:
+  application:
+    name: petclinic
+  h2:
+    console:
+      enabled: true
+      path: /console/
+  rabbitmq:
+    host: localhost
+    port: 5672
+  redis:
+    host: localhost
+    port: 6379
+  data:
+    mongodb:
+      host: localhost
+      database: petclinic
+      port: 27017
+  activiti:
+    processDefinitionLocationPrefix:  classpath*:process-defs/**.xml
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+  sqldatasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+
+#    datasource:
+#      url: jdbc:mysql://localhost/test
+#      driver-class-name: com.mysql.jdbc.Driver
+packageName: com.example
+application:
+  mode: online
+  error:
+    genericMsg: System Error ERR.UNIQUEID
+#  exceptions:
+#    com.antheminc.oss.nimbus.FrameworkRuntimeException: Runtime Exception - ERR.UNIQUEID
+#    genericMsg: ERR.UNIQUEID - System Error. ## Can use ERR.UNIQUEID as a placeholder to replace the uniqueId for error.
+
+##Logging properties
+#logging.file=${LOG_DIR_PATH}/${spring.application.name}.log
+#logging.file=/var/tmp/nimbus/logs/${spring.application.name}.log
+
+serviceUserName: integration_service
+servicePassword: HashedPwd1234!!!!!!!!!!!!!****
+
+## Petclinic Env properties
+petclinic:
+  clinicname: PugsAndPaws
+logging:
+  file: ${HOME}/Documents/nimbuslogs/${spring.application.name}.log
+  level:
+    reactor.io.net.impl.netty.tcp: DEBUG
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } [%X{SESSIONID:- }] --- [%t] %-40.40logger{39} : %replace(%replace(%m){'\n', ''}){'\r', ''} %n${LOG_EXCEPTION_CONVERSION_WORD: %wEx}"  
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } [%X{SESSIONID:- }] --- [%t] %-40.40logger{39} : %replace(%replace(%m){'\n', ''}){'\r', ''} %n${LOG_EXCEPTION_CONVERSION_WORD: %wEx}"
+  
+#logging.level.org.springframework=DEBUG
+
+jwt:
+  secret: nimbustest
+  algorithm: HS512
+  
+process:
+  key:
+    regex:
+     ([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)
+  database:
+    driver: 
+      ${PROCESS_DATABASE_DRIVER:embeddedH2}
+    url: 
+      ${PROCESS_DATABASE_URL:embeddedH2}
+    username: 
+      ${PROCESS_DATABASE_USERNAME:embeddedH2}
+    password: 
+      ${PROCESS_DATABASE_PASSWORD:embeddedH2}
+    taskUpdateQuery:
+      update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
+    executionUpdateQuery:
+      update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
+  history:
+    level: 
+      full
+  definitions:
+   - classpath*:process-defs/**.xml
+  rules:
+   - rules/**.drl  
+  customDeployers:
+
+platform:
+  config:
+    cookies:
+      gateway:
+        name: GATEWAYSESSIONID
+        path: /
+    
+      api:
+        name: APISESSIONID
+        path: /
+
+      sticky:
+        name: STICKYSERVERID
+        path: /
+    secure:
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,1000}" 
+server:
+  port: 8080
+  servlet:
+    session: 
+      timeout: 1800
+    context-path: /petclinic
+    
+auth-server: http://localhost:8891
+security:
+  oauth2:
+    resource:
+      tokenInfoUri: ${auth-server}/auth-service/oauth/check_token
+    client:
+      clientId: nimbus
+      clientSecret: xfer498
+  
+eureka:
+  client:
+    enabled: false
+
+ruleBasedRequestHandler:
+                     - defaultRuleBasedRequestHandler
+                     - defaultRuleBasedResponseHandler
+
+scriptBasedRequestHandler: defaultScriptBasedRequestHandler
+scriptBasedResponseHandler: defaultScriptBasedResponseHandler
+
+scriptHandlerType: cript
+customHandlerType: Custom
+
+stomp:
+    hostName: localhost
+    port: 61613
+
+domain:
+  model:
+    basePackages: 
+      - com.antheminc.oss.nimbus.entity
+      - com.atlas.client.extension.petclinic.user
+      - com.atlas.client.extension.petclinic.core
+      - com.atlas.client.extension.petclinic.view
+      - com.atlas.client.extension.petquestionnaire.core
+      - com.atlas.client.extension.petquestionnaire.view
+    typeClassMappings:
+      java.lang.String : 
+        string
+    includeFilter: ['a','b']
+    persistenceStrategy: ATOMIC
+  action: abc
+    
+  validation:
+    markerAnnotations:
+      javax.validation.Constraint
+    markerInterfaces:
+   
+#logging:
+#  file: ${HOME}/Documents/nimbuslogs/platform-core-web.log
+user:
+  permissionToActions:
+    ACCESS:
+      _get,_info,_search,_new,_replace,_update,_delete,_nav,_process
+    READ:
+      _get,_info,_search,_getAll,_nav,_process
+    CREATE:
+      _new,_nav,_process
+    UPDATE:
+      _update,_replace,_nav,_process
+    DELETE:
+      _delete,_nav,_process
+  #authenticationStrategyBeans:
+     #jwtAuthenticationStrategy, ldapAuthenticationStrategy
+template:
+  definitions:
+    - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
+      id: flow_umcase_findPatient
+      criteria:  
+model:
+  persistence:
+    strategy:
+      mode:
+        ATOMIC
+dsl:
+  behavior:
+    extensions:
+      #$execute:
+        #$save   
+quartz:
+  enabled: true
+  frequency: 1000
+
+org:
+  quartz:
+    scheduler:
+      instanceName:
+        spring-activiti-quartz
+      instanceId:
+        AUTO
+    threadPool:
+      threadCount: 2
+    jobStore:
+      class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      useProperties: true
+      misfireThreshold: 60000
+      tablePrefix: QRTZ_
+      isClustered: true
+      clusterCheckinInterval: 20000
+
+session:
+  userKey: client-user-key
+
+staticResourcesPath: ./target/webapp/
+
+app:
+  endpoints:
+
+search:
+  threshold:
+    50
+    
+nimbus:
+  multitenancy: 
+    enabled: true
+    tenants:
+      1: 
+        clientId: client_a
+        pattern: /foo:1/**
+      2:
+        clientId: client_a
+        pattern: /foo:2/*/app

@@ -8,12 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.antheminc.oss.nimbus.app.extension.config.DefaultClientUserDetails;
@@ -21,21 +19,20 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 import com.atlas.petclinic.web.security.utils.JWTAuthConstants;
 import com.atlas.petclinic.web.security.utils.JWTAuthTokenUtil;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 
  * @author Swetha Vemuri
  *
  */
-@Component
+@RequiredArgsConstructor
 public class JWTWebAuthenticationFilter extends OncePerRequestFilter{
 
 	private JustLogit logit = new JustLogit(this.getClass());
 	
-	@Autowired
-	JWTAuthTokenUtil tokenUtil;
-	
-	@Autowired
-	ClientUserDetailsServiceImpl userDetailsService;
+	private final JWTAuthTokenUtil tokenUtil;
+	private final ClientUserDetailsServiceImpl userDetailsService;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

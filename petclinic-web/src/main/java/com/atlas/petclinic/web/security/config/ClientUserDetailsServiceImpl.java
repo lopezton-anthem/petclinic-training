@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -31,16 +30,19 @@ import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.user.UserRole;
 import com.atlas.petclinic.ApplicationBeanResolver;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author AC63348
  *
  */
+@RequiredArgsConstructor
 public class ClientUserDetailsServiceImpl implements ClientUserDetailsService {
 
 public final static Logger LOG = LoggerFactory.getLogger(ClientUserDetailsServiceImpl.class);
 	
-	@Autowired
-	public SessionProvider sessionProvider;	
+	
+	private final SessionProvider sessionProvider;	
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
