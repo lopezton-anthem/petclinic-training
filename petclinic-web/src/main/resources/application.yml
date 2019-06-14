@@ -229,7 +229,11 @@ nimbus:
     tenants:
       1: 
         clientId: client_a
-        pattern: /foo:1/**
+        description: LTSS (FL)
+        prefix: /client/org1/app
+        # pattern: /client/org1/**
       2:
         clientId: client_a
-        pattern: /foo:2/*/app
+        description: LTSS (KS)
+        prefix: /client/org2/app
+        # pattern: /client/org2/**
