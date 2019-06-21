@@ -225,15 +225,10 @@ search:
     
 nimbus:
   multitenancy: 
-    enabled: true
     tenants:
       1: 
-        clientId: client_a
-        description: LTSS (FL)
-        prefix: /client/org1/app
-        # pattern: /client/org1/**
+        description: Tenant 1
+        prefix: /client/1/app
       2:
-        clientId: client_a
-        description: LTSS (KS)
-        prefix: /client/org2/app
-        # pattern: /client/org2/**
+        description: Tenant 2
+        prefix: /client/2/app

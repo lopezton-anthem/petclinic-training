@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +21,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.multitenancy.Tenant;
 import com.antheminc.oss.nimbus.domain.model.state.multitenancy.TenantRepository;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
 
@@ -35,22 +35,23 @@ public class LoginController {
 	@Autowired
 	private TenantRepository tenantRepository;
 	
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+	@Autowired
+	private SessionProvider sessionProvider;
+	
+    @GetMapping(value = "/login")
+    public String login(HttpServletRequest request, HttpServletResponse response) {
     	return "login-multitenant";
     }
     
-    @RequestMapping(value = "/selectTenant", method = RequestMethod.GET)
-    public ModelAndView selectTenant(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	
+    @GetMapping(value = "/selectTenant")
+    public ModelAndView selectTenant(HttpServletRequest request, HttpServletResponse response) {
     	ClientUser clientUser = getLoggedInClientUser();
     	Set<Tenant> tenants = this.tenantRepository.findByIds(clientUser.getTenantIds());
     	return new ModelAndView("selectTenant", "tenants", tenants);
     }
     
-    @RequestMapping(value = "/processLogin", method = RequestMethod.GET)
-    public void processLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @GetMapping(value = "/processLogin")
+    public void processLogin(HttpServletRequest request, HttpServletResponse response) {
     	
     	ClientUser clientUser = getLoggedInClientUser();
     	
@@ -71,23 +72,32 @@ public class LoginController {
 		}
     	
 		// if more than one tenant is defined
-    	response.sendRedirect("/petclinic/selectTenant");
+		try {
+			response.sendRedirect("/petclinic/selectTenant");
+		} catch (IOException e) {
+			throw new FrameworkRuntimeException("Failed to redirect to select tenant page", e);
+		}
     }
 
-    @RequestMapping(value = "/chooseTenant", method = RequestMethod.GET)
-    public void chooseTenant(HttpServletRequest request, HttpServletResponse response, @RequestParam Long tenantId) throws Exception {
+    @GetMapping(value = "/chooseTenant")
+    public void chooseTenant(HttpServletRequest request, HttpServletResponse response, @RequestParam Long tenantId) {
     	Tenant tenant = this.tenantRepository.findById(tenantId);
     	response.addCookie(new Cookie("NIMBUS_ACTIVE_TENANT_PREFIX", tenant.getPrefix()));
+    	sessionProvider.setAttribute(Constants.ACTIVE_TENANT_COOKIE.code, tenant.getPrefix());
 		redirectToDashboard(response);
     }
     
-    @RequestMapping(value = "/apperror", method = RequestMethod.GET)
-    public String error(@RequestParam Map<String,String> allParams, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @GetMapping(value = "/apperror")
+    public String error(@RequestParam Map<String,String> allParams, HttpServletRequest request, HttpServletResponse response) {
     	return "customerror";
     }
 
-    private void redirectToDashboard(HttpServletResponse response) throws IOException {
-    	response.sendRedirect("/petclinic/#/h/petclinicdashboard/vpDashboard");
+    private void redirectToDashboard(HttpServletResponse response) {
+    	try {
+			response.sendRedirect("/petclinic/#/h/petclinicdashboard/vpDashboard");
+		} catch (IOException e) {
+			throw new FrameworkRuntimeException("Failed to redirect to dashboard", e);
+		}
     }
     
     /**
@@ -96,9 +106,9 @@ public class LoginController {
     private ClientUser getLoggedInClientUser() {
     	ClientUser clientUser = new ClientUser();
     	clientUser.setTenantIds(new HashSet<>());
-    	// DEMO: Add mock tenant ids here
     	clientUser.getTenantIds().add(1L);
     	clientUser.getTenantIds().add(2L);
+    	sessionProvider.setLoggedInUser(clientUser);
     	return clientUser;
     }
 }
