@@ -72,6 +72,10 @@ public class VPAddEditPet {
 		@Label("Meal Instruction")
 		@Modal(closable = true)
 		private VMMealInstruction vmMealInstruction;
+		
+		@Label("Meal Instruction")
+		@Modal(closable = true)
+		private VMPreapprovedMealInstructions vmPreapprovedMealInstructions;
 	    
 		@Section
 	    private VSAddEditPet vsAddEditPet;
@@ -139,11 +143,16 @@ public class VPAddEditPet {
 		@Max(value=500)
 		private String notes;
 		
-		@Label("Add Meal Instruction")
+		@Label("Add Custom Meal Instruction")
 		@Button
 		@Config(url = "/vpAddEditPet/vtAddEditPet/vmMealInstruction/section/form/_get?fn=param&expr=unassignMapsTo()")
 		@Config(url = "/vpAddEditPet/vtAddEditPet/vmMealInstruction/_process?fn=_setByRule&rule=togglemodal")
 		private String addMealInstruction;
+		
+		@Label("Add Meal Instruction")
+		@Button
+		@Config(url = "/vpAddEditPet/vtAddEditPet/vmPreapprovedMealInstructions/_process?fn=_setByRule&rule=togglemodal")
+		private String addPreapprovedMealInstruction;
 		
 		@Label("Meal Instructions")
 		@Grid(onLoad = true, expandableRows = true)

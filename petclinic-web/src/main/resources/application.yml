@@ -228,10 +228,7 @@ search:
 ext:
   repository:
     targetUrl: 
-      pharmacydrug: ${app.endpoints.ltss-integration-services}
-      memberauthorization: ${app.endpoints.ltss-integration-services}
-      memberauthorizations: ${app.endpoints.ltss-integration-services}
-      adhocmember: ${app.endpoints.ltss-integration-services}
+      mealinstruction: http://localhost:8082/petclinic
 
 cueIntegration:
   applicationId: 5666A5D6-3303-4E2A-BC45-05A3191286F0

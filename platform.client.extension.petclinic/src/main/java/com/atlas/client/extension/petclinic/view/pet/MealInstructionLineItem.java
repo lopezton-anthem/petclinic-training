@@ -16,6 +16,7 @@
 package com.atlas.client.extension.petclinic.view.pet;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
@@ -42,6 +43,8 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class MealInstructionLineItem {
 	
+	private Long id;
+	
 	@Label("Food Name")
 	@GridColumn(placeholder = "--")
 	@Path
@@ -56,6 +59,10 @@ public class MealInstructionLineItem {
 	@GridColumn(placeholder = "--")
 	@Path
 	private String timeOfDay;
+	
+	@GridColumn(hidden = true)
+	@Path
+	private List<NoteLineItem> notes;
 	
 	@GridRowBody
 	private RowBody rowBody;
@@ -123,5 +130,29 @@ public class MealInstructionLineItem {
 		@Link
 		@Config(url = "<!#this!>/../../_delete")
 		private String remove;
+	}
+	
+	@Model @Getter @Setter
+	public static class NoteLineItem {
+		
+		@CardDetail
+		private Card card;
+		
+		@Model
+		@Getter @Setter @ToString
+		public static class Card {
+			
+			@CardDetail.Body
+			private Body body;
+		}
+		
+		@Model
+		@Getter @Setter @ToString
+		public static class Body {
+			
+			@FieldValue(placeholder = "--")
+			@Label("Note content:")
+			private String content;	
+		}
 	}
 }

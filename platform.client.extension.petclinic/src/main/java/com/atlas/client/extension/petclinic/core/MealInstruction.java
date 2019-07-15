@@ -15,8 +15,12 @@
  */
 package com.atlas.client.extension.petclinic.core;
 
-import com.antheminc.oss.nimbus.domain.defn.Model;
+import java.util.List;
+
+import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
+import com.atlas.client.extension.petclinic.view.pet.MealInstructionLineItem.NoteLineItem;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +30,8 @@ import lombok.ToString;
  * @author Tony Lopez
  *
  */
-@Model
+@Domain(value = "mealinstruction", includeListeners = { Domain.ListenerType.update })
+@Repo(value = Repo.Database.rep_ws)
 @Getter @Setter @ToString
 public class MealInstruction extends IdLong {
 	
@@ -36,4 +41,5 @@ public class MealInstruction extends IdLong {
 	private String amount;
 	private String timeOfDay;
 	private String lengthOfTimeEaten;
+	private List<NoteLineItem> notes;
 }
